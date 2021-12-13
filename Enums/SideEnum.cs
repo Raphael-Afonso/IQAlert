@@ -1,6 +1,6 @@
 ﻿namespace IQAlert.Enums
 {
-    public enum Side
+    internal enum Side
     {
         Call = 1,
         Put = 2

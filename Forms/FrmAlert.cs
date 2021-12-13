@@ -1,20 +1,19 @@
 ﻿using IQAlert.Biz;
-using IQAlert.Model;
 
 namespace IQAlert.Forms
 {
     public partial class FrmAlert : Form
     {
-        private List<Signal>? SignalList;
+        private readonly IQBiz IQBiz;
         public FrmAlert()
         {
             InitializeComponent();
+            IQBiz = new();
         }
 
         private void FrmAlert_Load(object sender, EventArgs e)
         {
             SetPosition();
-            LoadSignalList();
             SignalTimer.Start();
         }
 
@@ -24,115 +23,63 @@ namespace IQAlert.Forms
             Location = new Point(0, 0);
         }
 
-        private void LoadSignalList()
-        {
-            SignalList = IQBiz.GetSavedSignalList();
-        }
-        private void UpdateSignalObjects()
-        {
-            var DateNow = DateTime.Now;
-            TimeOnly Now = new(DateNow.Hour, DateNow.Minute);
-            Signal SignalNow = null;
-            Signal SignalAfter = null;
-
-            foreach (var item in SignalList)
-            {
-                if (Now >= item.GetStartTime && Now <= item.GetStartTime.AddMinutes(15))
-                {
-                    SignalNow = item;
-                    break;
-                }
-            }
-
-            foreach (var item in SignalList)
-            {
-                if (SignalNow != null)
-                {
-                    if (item.GetStartTime > Now &&
-                    item.GetStartTime > SignalNow.GetStartTime.AddMinutes(15))
-                    {
-                        SignalAfter = item;
-                        break;
-                    }
-                }
-                else
-                {
-                    if (item.GetStartTime > Now)
-                    {
-                        SignalAfter = item;
-                        break;
-                    }
-                }
-            }
-
-            if (SignalNow != null)
-            {
-                LbSignalNow.Text = $"Ativo: {SignalNow.Exchange}";
-                LbTimeNow.Text = $"Hora: {SignalNow.StartTime}";
-
-                switch (SignalNow.Side)
-                {
-                    case Enums.Side.Call:
-                        PicSignalNow.Image = Properties.Resources.Call;
-                        break;
-                    case Enums.Side.Put:
-                        PicSignalNow.Image = Properties.Resources.Put;
-                        break;
-                }
-            }
-            else
-            {
-                LbSignalNow.Text = "Ativo:";
-                LbTimeNow.Text = "Hora:";
-                PicSignalNow.Image = null;
-            }
-
-            if (SignalAfter != null)
-            {
-                LbSignalAfter.Text = $"Ativo: {SignalAfter.Exchange}";
-                LbTimeAfter.Text = $"Hora: {SignalAfter.StartTime}";
-
-                switch (SignalAfter.Side)
-                {
-                    case Enums.Side.Call:
-                        PicSignalAfter.Image = Properties.Resources.Call;
-                        break;
-                    case Enums.Side.Put:
-                        PicSignalAfter.Image = Properties.Resources.Put;
-                        break;
-                }
-
-                if (SignalAfter.GetStartTime.AddMinutes(-1) == Now &&
-                    !SignalAfter.AlreadyNotified)
-                {
-                    IQBiz.PlayNotifySound();
-                    SignalList[SignalList.IndexOf(SignalAfter)]
-                        .AlreadyNotified = true;
-                }
-            }
-            else
-            {
-                LbSignalAfter.Text = "Ativo:";
-                LbTimeAfter.Text = "Hora:";
-                PicSignalAfter.Image = null;
-            }
-        }
-
         private void SignalTimer_Tick(object sender, EventArgs e)
         {
-            UpdateSignalObjects();
+            var Signals = IQBiz.GetSignals();
+
+            if (Signals.NextSignal != null)
+            {
+                LbSignalAfter.Text = $"Ativo: {Signals.NextSignal.Exchange}";
+                LbTimeAfter.Text = $"Hora: {Signals.NextSignal.GetStartTime}";
+
+                PicSignalAfter.Image = Signals.NextSignal.Side switch
+                {
+                    Enums.Side.Call => Properties.Resources.Call,
+                    Enums.Side.Put => Properties.Resources.Put,
+                    _ => null
+                };
+            }
+            else
+            {
+                ResetNextSignalComponents();
+            }
+
+            if (Signals.CurrentSignal != null)
+            {
+                LbSignalNow.Text = $"Ativo: {Signals.CurrentSignal.Exchange}";
+                LbTimeNow.Text = $"Hora: {Signals.CurrentSignal.GetStartTime}";
+
+                PicSignalNow.Image = Signals.CurrentSignal.Side switch
+                {
+                    Enums.Side.Call => Properties.Resources.Call,
+                    Enums.Side.Put => Properties.Resources.Put,
+                    _ => null
+                };
+            }
+            else
+            {
+                ResetCurrentSignalComponents();
+            }
+        }
+
+        private void ResetCurrentSignalComponents()
+        {
+            LbSignalNow.Text = "Ativo:";
+            LbTimeNow.Text = "Hora:";
+            PicSignalNow.Image = null;
+        }
+
+        private void ResetNextSignalComponents()
+        {
+            LbSignalAfter.Text = "Ativo:";
+            LbTimeAfter.Text = "Hora:";
+            PicSignalAfter.Image = null;
         }
 
         private void BtnConfig_Click(object sender, EventArgs e)
         {
-            SignalTimer.Stop();
-
-            FrmSignalList FrmSignalList = new();
+            FrmSignalList FrmSignalList = new(IQBiz);
             FrmSignalList.ShowDialog();
-            if (FrmSignalList.HasReload)
-                LoadSignalList();
-
-            SignalTimer.Start();
         }
     }
 }

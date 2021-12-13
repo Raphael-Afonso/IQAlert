@@ -1,22 +1,24 @@
 ﻿using IQAlert.Enums;
+using IQAlert.Extensions;
 using System.Text.Json.Serialization;
 
 namespace IQAlert.Model
 {
     internal class Signal
     {
-        public string? Exchange { get; set; }
-        public string? StartTime { get; set; }
+        internal string Exchange { get; set; }
+        internal string StartTime { get; set; }
         [JsonIgnore]
-        public TimeOnly GetStartTime { get => ConvertStringToTimeOnly(); }
+        internal TimeOnly GetStartTime { get => StartTime.ToTimeOnly(); }
         [JsonIgnore]
-        public bool AlreadyNotified { get; set; } = false;
-        public Side Side { get; set; }
+        internal bool IsNotified { get; set; } = false;
+        internal Side Side { get; set; }
 
-        private TimeOnly ConvertStringToTimeOnly()
+        internal Signal(string exchange, string startTime, Side side)
         {
-            return new TimeOnly(Convert.ToInt32(StartTime[..2]),
-                Convert.ToInt32(StartTime[3..]));
+            Exchange = exchange;
+            StartTime = startTime;
+            Side = side;
         }
     }
 }

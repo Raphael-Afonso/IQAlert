@@ -1,70 +1,159 @@
-﻿using IQAlert.Enums;
+﻿using IQAlert.CustomEventArgs;
+using IQAlert.Enums;
 using IQAlert.Model;
 using System.Media;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace IQAlert.Biz
 {
-    internal static class IQBiz
+    internal class IQBiz
     {
-        public static List<Signal> GetSavedSignalList()
+        private event EventHandler<UpdateSignalListArgs> UpdatedSignalList;
+        private List<Signal> SignalList;
+
+        internal IQBiz()
         {
-            string StoredSignalList = Properties.Settings.Default.SignalList;
-            if (StoredSignalList is not null)
-            {
-                try
-                {
-                    return JsonSerializer.Deserialize<List<Signal>>(StoredSignalList);
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            }
-            return null;
+            SignalList = LoadSignalList();
+            
+            UpdatedSignalList += OnUpdateSignalList!;
         }
-        public static void SaveSignalList(string[] signalList)
+
+        internal void SaveSignalList(string[] signalList)
         {
-            Properties.Settings.Default["SignalList"] = JsonSerializer.Serialize(
-                SerializeSignalList(signalList));
+            var DeserializetedSignalList = DeserializeSignalList(signalList);
+
+            Properties.Settings.Default["SignalList"] = JsonSerializer.Serialize(DeserializetedSignalList);
 
             Properties.Settings.Default.Save();
 
+            UpdatedSignalList.Invoke(this, new() { SignalList = DeserializetedSignalList });
         }
-        private static List<Signal> SerializeSignalList(string[] signalList)
+
+        internal Signals GetSignals()
+        {
+            var DateNow = DateTime.Now;
+            TimeOnly Now = new(DateNow.Hour, DateNow.Minute);
+
+            Signals Signals = new();
+
+            foreach (var item in SignalList)
+            {
+                if (Now >= item.GetStartTime && Now <= item.GetStartTime.AddMinutes(15))
+                {
+                    Signals.CurrentSignal = item;
+                    break;
+                }
+            }
+
+            foreach (var item in SignalList)
+            {
+                if (Signals.CurrentSignal != null)
+                {
+                    if (item.GetStartTime > Now &&
+                    item.GetStartTime > Signals.CurrentSignal.GetStartTime.AddMinutes(15))
+                    {
+                        Signals.NextSignal = item;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (item.GetStartTime > Now)
+                    {
+                        Signals.NextSignal = item;
+                        break;
+                    }
+                }
+            }
+
+            if (Signals.NextSignal != null)
+            {
+                if (Signals.NextSignal.GetStartTime.AddMinutes(-1) == Now &&
+                !Signals.NextSignal.IsNotified)
+                {
+                    PlayNotifySound();
+                    SignalList[SignalList.IndexOf(Signals.NextSignal)]
+                        .IsNotified = true;
+                }
+            }
+
+            return Signals;
+        }
+
+        private static List<Signal> DeserializeSignalList(string[] signalList)
         {
             var SignalList = new List<Signal>();
 
-            foreach (var signal in signalList)
-            {
-                string[] SeparedSignal = signal.Split(" ");
-                string[] Sides = new string[] { "CALL", "PUT" };
-                
-                Side Side = Sides.FirstOrDefault(c=>SeparedSignal[2].Contains(c)) switch
-                {
-                    "CALL" => Side.Call,
-                    "PUT" => Side.Put,
-                    _ => throw new ArgumentException("Problema na leitura da lista!"),
-                };
+            ValitedSignalLines(signalList);
 
-                Signal NewSignal = new()
+            foreach (var line in signalList)
+            {
+                //Ignore empty lines
+                if (!string.IsNullOrEmpty(line))
                 {
-                    StartTime = SeparedSignal[0],
-                    Side = Side,
-                    Exchange = SeparedSignal[1]
-                };
-                SignalList.Add(NewSignal);
+                    string[] SeparedSignal = line.Split(" ");
+                    string[] Sides = new string[] { "CALL", "PUT" };
+
+                    Side Side = Sides.FirstOrDefault(c => SeparedSignal[2].ToUpper().Contains(c)) switch
+                    {
+                        "CALL" => Side.Call,
+                        "PUT" => Side.Put,
+                        _ => throw new ArgumentException("Problema na leitura da lista!"),
+                    };
+
+                    Signal NewSignal = new(
+                        SeparedSignal[1], SeparedSignal[0], Side);
+                    SignalList.Add(NewSignal);
+                }
             }
             return SignalList;
         }
-        public static void PlayNotifySound()
+
+        private static void ValitedSignalLines(string[] lines)
+        {
+            foreach (var line in lines)
+            {
+                string[] SeparedLine = line.Split(" ");
+
+                if (!Regex.IsMatch(SeparedLine[0], @"^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"))
+                    throw new FormatException("Formato da lista desconhecido!");
+                if(!SeparedLine[2].Contains("CALL") && !SeparedLine[2].Contains("PUT"))
+                    throw new FormatException("Formato da lista desconhecido!");
+            }
+        }
+
+        private static List<Signal> LoadSignalList()
+        {
+            string StoredSignalList = Properties.Settings.Default.SignalList;
+            if (StoredSignalList != null)
+            {
+                try
+                {
+                    return JsonSerializer.Deserialize<List<Signal>>(StoredSignalList)!;
+                }
+                catch (Exception)
+                { }
+            }
+            return new List<Signal>();
+        }
+
+        private void OnUpdateSignalList(object sender, UpdateSignalListArgs e)
+        {
+            SignalList = e.SignalList;
+        }
+
+        private static void PlayNotifySound()
         {
             try
             {
                 System.Reflection.Assembly a = System.Reflection.Assembly.GetExecutingAssembly();
-                Stream s = a.GetManifestResourceStream("IQAlert.Notify.mp3");
-                using SoundPlayer NotifySound = new(s);
-                NotifySound.Play();
+                Stream s = a.GetManifestResourceStream("IQAlert.Notify.mp3")!;
+                if (s != null)
+                {
+                    using SoundPlayer NotifySound = new(s);
+                    NotifySound.Play();
+                }
             }
             catch (Exception)
             {
