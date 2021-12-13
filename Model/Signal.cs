@@ -4,17 +4,17 @@ using System.Text.Json.Serialization;
 
 namespace IQAlert.Model
 {
-    internal class Signal
+    public class Signal
     {
-        internal string Exchange { get; set; }
-        internal string StartTime { get; set; }
+        public string Exchange { get; set; }
+        public string StartTime { get; set; }
+        public Side Side { get; set; }
         [JsonIgnore]
-        internal TimeOnly GetStartTime { get => StartTime.ToTimeOnly(); }
+        public TimeOnly GetStartTime { get => StartTime.ToTimeOnly(); }
         [JsonIgnore]
-        internal bool IsNotified { get; set; } = false;
-        internal Side Side { get; set; }
+        public bool IsNotified { get; set; } = false;
 
-        internal Signal(string exchange, string startTime, Side side)
+        public Signal(string exchange, string startTime, Side side)
         {
             Exchange = exchange;
             StartTime = startTime;
