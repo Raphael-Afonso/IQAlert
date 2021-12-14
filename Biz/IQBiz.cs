@@ -39,14 +39,8 @@ namespace IQAlert.Biz
 
             Signals Signals = new();
 
-            foreach (var item in SignalList)
-            {
-                if (Now >= item.GetStartTime && Now <= item.GetStartTime.AddMinutes(10))
-                {
-                    Signals.CurrentSignal = item;
-                    break;
-                }
-            }
+            Signals.CurrentSignal = SignalList
+                .FirstOrDefault(c => Now >= c.GetStartTime && Now <= c.GetStartTime.AddMinutes(15));
 
             if (Signals.CurrentSignal != null)            
                 Signals.NextSignal = SignalList[SignalList.IndexOf(Signals.CurrentSignal) + 1];
