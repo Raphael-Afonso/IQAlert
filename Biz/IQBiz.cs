@@ -1,5 +1,6 @@
 ﻿using IQAlert.CustomEventArgs;
 using IQAlert.Enums;
+using IQAlert.Extensions;
 using IQAlert.Model;
 using System.Media;
 using System.Text.Json;
@@ -32,8 +33,7 @@ namespace IQAlert.Biz
 
         internal Signals GetSignals()
         {
-            var DateNow = DateTime.Now;
-            TimeOnly Now = new(DateNow.Hour, DateNow.Minute);
+            TimeOnly Now = DateTime.Now.ToTimeOnly();
 
             Signals Signals = new();
 
