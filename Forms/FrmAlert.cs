@@ -5,6 +5,7 @@ namespace IQAlert.Forms
     public partial class FrmAlert : Form
     {
         private readonly IQBiz IQBiz;
+        private Point MousePoint;
         public FrmAlert()
         {
             InitializeComponent();
@@ -80,6 +81,26 @@ namespace IQAlert.Forms
         {
             FrmSignalList FrmSignalList = new(IQBiz);
             FrmSignalList.ShowDialog();
+        }
+
+        private void FrmAlert_MouseDown(object sender, MouseEventArgs e)
+        {
+            MousePoint = e.Location;
+        }
+
+        private void FrmAlert_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                int dx = e.Location.X - MousePoint.X;
+                int dy = e.Location.Y - MousePoint.Y;
+                Location = new Point(Location.X + dx, Location.Y + dy);
+            }
+        }
+
+        private void BtnClose_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

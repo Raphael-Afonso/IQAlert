@@ -39,13 +39,14 @@
             this.BtnConfig = new System.Windows.Forms.Button();
             this.Separator = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.BtnClose = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.PicSignalNow)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PicSignalAfter)).BeginInit();
             this.SuspendLayout();
             // 
             // PicSignalNow
             // 
-            this.PicSignalNow.Location = new System.Drawing.Point(164, 34);
+            this.PicSignalNow.Location = new System.Drawing.Point(164, 47);
             this.PicSignalNow.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.PicSignalNow.Name = "PicSignalNow";
             this.PicSignalNow.Size = new System.Drawing.Size(34, 34);
@@ -55,7 +56,7 @@
             // LbSignalNow
             // 
             this.LbSignalNow.AutoSize = true;
-            this.LbSignalNow.Location = new System.Drawing.Point(24, 34);
+            this.LbSignalNow.Location = new System.Drawing.Point(24, 47);
             this.LbSignalNow.Name = "LbSignalNow";
             this.LbSignalNow.Size = new System.Drawing.Size(51, 20);
             this.LbSignalNow.TabIndex = 1;
@@ -64,7 +65,7 @@
             // LbTimeNow
             // 
             this.LbTimeNow.AutoSize = true;
-            this.LbTimeNow.Location = new System.Drawing.Point(24, 64);
+            this.LbTimeNow.Location = new System.Drawing.Point(24, 77);
             this.LbTimeNow.Name = "LbTimeNow";
             this.LbTimeNow.Size = new System.Drawing.Size(53, 20);
             this.LbTimeNow.TabIndex = 2;
@@ -73,7 +74,7 @@
             // LbTimeAfter
             // 
             this.LbTimeAfter.AutoSize = true;
-            this.LbTimeAfter.Location = new System.Drawing.Point(24, 157);
+            this.LbTimeAfter.Location = new System.Drawing.Point(24, 170);
             this.LbTimeAfter.Name = "LbTimeAfter";
             this.LbTimeAfter.Size = new System.Drawing.Size(53, 20);
             this.LbTimeAfter.TabIndex = 5;
@@ -82,7 +83,7 @@
             // LbSignalAfter
             // 
             this.LbSignalAfter.AutoSize = true;
-            this.LbSignalAfter.Location = new System.Drawing.Point(24, 127);
+            this.LbSignalAfter.Location = new System.Drawing.Point(24, 140);
             this.LbSignalAfter.Name = "LbSignalAfter";
             this.LbSignalAfter.Size = new System.Drawing.Size(51, 20);
             this.LbSignalAfter.TabIndex = 4;
@@ -90,7 +91,7 @@
             // 
             // PicSignalAfter
             // 
-            this.PicSignalAfter.Location = new System.Drawing.Point(164, 127);
+            this.PicSignalAfter.Location = new System.Drawing.Point(164, 140);
             this.PicSignalAfter.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.PicSignalAfter.Name = "PicSignalAfter";
             this.PicSignalAfter.Size = new System.Drawing.Size(34, 34);
@@ -116,7 +117,7 @@
             // Separator
             // 
             this.Separator.BackColor = System.Drawing.Color.Black;
-            this.Separator.Location = new System.Drawing.Point(69, 110);
+            this.Separator.Location = new System.Drawing.Point(69, 123);
             this.Separator.Name = "Separator";
             this.Separator.Size = new System.Drawing.Size(150, 1);
             this.Separator.TabIndex = 8;
@@ -125,11 +126,21 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 98);
+            this.label1.Location = new System.Drawing.Point(3, 111);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(64, 20);
             this.label1.TabIndex = 9;
             this.label1.Text = "Próximo";
+            // 
+            // BtnClose
+            // 
+            this.BtnClose.Image = global::IQAlert.Properties.Resources.Close;
+            this.BtnClose.Location = new System.Drawing.Point(190, 3);
+            this.BtnClose.Name = "BtnClose";
+            this.BtnClose.Size = new System.Drawing.Size(29, 28);
+            this.BtnClose.TabIndex = 10;
+            this.BtnClose.UseVisualStyleBackColor = true;
+            this.BtnClose.Click += new System.EventHandler(this.BtnClose_Click);
             // 
             // FrmAlert
             // 
@@ -137,6 +148,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(224, 210);
+            this.Controls.Add(this.BtnClose);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Separator);
             this.Controls.Add(this.BtnConfig);
@@ -154,6 +166,8 @@
             this.Text = "FrmAlert";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.FrmAlert_Load);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FrmAlert_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FrmAlert_MouseMove);
             ((System.ComponentModel.ISupportInitialize)(this.PicSignalNow)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PicSignalAfter)).EndInit();
             this.ResumeLayout(false);
@@ -173,5 +187,6 @@
         private Button BtnConfig;
         private Label Separator;
         private Label label1;
+        private Button BtnClose;
     }
 }

@@ -15,7 +15,7 @@ namespace IQAlert.Biz
         internal IQBiz()
         {
             SignalList = LoadSignalList();
-            
+
             UpdatedSignalList += OnUpdateSignalList!;
         }
 
@@ -118,7 +118,7 @@ namespace IQAlert.Biz
 
                 if (!Regex.IsMatch(SeparedLine[0], @"^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"))
                     throw new FormatException("Formato da lista desconhecido!");
-                if(!SeparedLine[2].Contains("CALL") && !SeparedLine[2].Contains("PUT"))
+                if (!SeparedLine[2].Contains("CALL") && !SeparedLine[2].Contains("PUT"))
                     throw new FormatException("Formato da lista desconhecido!");
             }
         }
@@ -143,21 +143,15 @@ namespace IQAlert.Biz
             SignalList = e.SignalList;
         }
 
-        private static void PlayNotifySound()
+        public static void PlayNotifySound()
         {
             try
             {
-                System.Reflection.Assembly a = System.Reflection.Assembly.GetExecutingAssembly();
-                Stream s = a.GetManifestResourceStream("IQAlert.Notify.mp3")!;
-                if (s != null)
-                {
-                    using SoundPlayer NotifySound = new(s);
-                    NotifySound.Play();
-                }
+                using SoundPlayer NotifySound = new(Properties.Resources.Notify);
+                NotifySound.Play();
             }
             catch (Exception)
-            {
-            }
+            { }
         }
     }
 }

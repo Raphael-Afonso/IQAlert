@@ -73,6 +73,16 @@ namespace IQAlert.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Close {
+            get {
+                object obj = ResourceManager.GetObject("Close", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Engrenagem {
             get {
                 object obj = ResourceManager.GetObject("Engrenagem", resourceCulture);
@@ -81,12 +91,11 @@ namespace IQAlert.Properties {
         }
         
         /// <summary>
-        ///   Consulta um recurso localizado do tipo System.Byte[].
+        ///   Consulta um recurso localizado do tipo System.IO.UnmanagedMemoryStream semelhante a System.IO.MemoryStream.
         /// </summary>
-        internal static byte[] Notify {
+        internal static System.IO.UnmanagedMemoryStream Notify {
             get {
-                object obj = ResourceManager.GetObject("Notify", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetStream("Notify", resourceCulture);
             }
         }
         
