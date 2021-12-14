@@ -22,7 +22,9 @@ namespace IQAlert.Biz
 
         internal void SaveSignalList(string[] signalList)
         {
-            var DeserializetedSignalList = DeserializeSignalList(signalList);
+            var DeserializetedSignalList = DeserializeSignalList(signalList)
+                .OrderBy(c => c.GetStartTime)
+                .ToList();
 
             Properties.Settings.Default["SignalList"] = JsonSerializer.Serialize(DeserializetedSignalList);
 
@@ -39,33 +41,18 @@ namespace IQAlert.Biz
 
             foreach (var item in SignalList)
             {
-                if (Now >= item.GetStartTime && Now <= item.GetStartTime.AddMinutes(15))
+                if (Now >= item.GetStartTime && Now <= item.GetStartTime.AddMinutes(10))
                 {
                     Signals.CurrentSignal = item;
                     break;
                 }
             }
 
-            foreach (var item in SignalList)
-            {
-                if (Signals.CurrentSignal != null)
-                {
-                    if (item.GetStartTime > Now &&
-                    item.GetStartTime > Signals.CurrentSignal.GetStartTime.AddMinutes(15))
-                    {
-                        Signals.NextSignal = item;
-                        break;
-                    }
-                }
-                else
-                {
-                    if (item.GetStartTime > Now)
-                    {
-                        Signals.NextSignal = item;
-                        break;
-                    }
-                }
-            }
+            if (Signals.CurrentSignal != null)            
+                Signals.NextSignal = SignalList[SignalList.IndexOf(Signals.CurrentSignal) + 1];
+            else
+                Signals.NextSignal = SignalList.FirstOrDefault(c => c.GetStartTime >= Now);
+
 
             if (Signals.NextSignal != null)
             {

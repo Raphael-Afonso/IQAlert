@@ -46,7 +46,7 @@
             // 
             // PicSignalNow
             // 
-            this.PicSignalNow.Location = new System.Drawing.Point(164, 47);
+            this.PicSignalNow.Location = new System.Drawing.Point(177, 47);
             this.PicSignalNow.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.PicSignalNow.Name = "PicSignalNow";
             this.PicSignalNow.Size = new System.Drawing.Size(34, 34);
@@ -56,7 +56,7 @@
             // LbSignalNow
             // 
             this.LbSignalNow.AutoSize = true;
-            this.LbSignalNow.Location = new System.Drawing.Point(24, 47);
+            this.LbSignalNow.Location = new System.Drawing.Point(15, 47);
             this.LbSignalNow.Name = "LbSignalNow";
             this.LbSignalNow.Size = new System.Drawing.Size(51, 20);
             this.LbSignalNow.TabIndex = 1;
@@ -65,7 +65,7 @@
             // LbTimeNow
             // 
             this.LbTimeNow.AutoSize = true;
-            this.LbTimeNow.Location = new System.Drawing.Point(24, 77);
+            this.LbTimeNow.Location = new System.Drawing.Point(15, 77);
             this.LbTimeNow.Name = "LbTimeNow";
             this.LbTimeNow.Size = new System.Drawing.Size(53, 20);
             this.LbTimeNow.TabIndex = 2;
@@ -74,7 +74,7 @@
             // LbTimeAfter
             // 
             this.LbTimeAfter.AutoSize = true;
-            this.LbTimeAfter.Location = new System.Drawing.Point(24, 170);
+            this.LbTimeAfter.Location = new System.Drawing.Point(15, 170);
             this.LbTimeAfter.Name = "LbTimeAfter";
             this.LbTimeAfter.Size = new System.Drawing.Size(53, 20);
             this.LbTimeAfter.TabIndex = 5;
@@ -83,7 +83,7 @@
             // LbSignalAfter
             // 
             this.LbSignalAfter.AutoSize = true;
-            this.LbSignalAfter.Location = new System.Drawing.Point(24, 140);
+            this.LbSignalAfter.Location = new System.Drawing.Point(15, 140);
             this.LbSignalAfter.Name = "LbSignalAfter";
             this.LbSignalAfter.Size = new System.Drawing.Size(51, 20);
             this.LbSignalAfter.TabIndex = 4;
@@ -91,7 +91,7 @@
             // 
             // PicSignalAfter
             // 
-            this.PicSignalAfter.Location = new System.Drawing.Point(164, 140);
+            this.PicSignalAfter.Location = new System.Drawing.Point(177, 140);
             this.PicSignalAfter.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.PicSignalAfter.Name = "PicSignalAfter";
             this.PicSignalAfter.Size = new System.Drawing.Size(34, 34);
