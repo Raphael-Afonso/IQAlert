@@ -42,11 +42,16 @@ namespace IQAlert.Biz
             Signals.CurrentSignal = SignalList
                 .FirstOrDefault(c => Now >= c.GetStartTime && Now <= c.GetStartTime.AddMinutes(15));
 
-            if (Signals.CurrentSignal != null)            
-                Signals.NextSignal = SignalList[SignalList.IndexOf(Signals.CurrentSignal) + 1];
+            if (Signals.CurrentSignal != null)
+            {
+                int NextSignalIndex = SignalList.IndexOf(Signals.CurrentSignal) + 1;
+                if (NextSignalIndex < SignalList.Count)
+                    Signals.NextSignal = SignalList[NextSignalIndex];
+            }
             else
+            {
                 Signals.NextSignal = SignalList.FirstOrDefault(c => c.GetStartTime >= Now);
-
+            }
 
             if (Signals.NextSignal != null)
             {
