@@ -15,6 +15,6 @@ Exemplo:
 20:15 EURUSD PUT
 ```
 
-#### Envie sua sugestão através de Issue
+#### Envie sua sugestão através de Issue/PR
 #### Colabore com o projeto através do PIX: 1fd3b562-245e-4440-863c-981aae04b996
 
